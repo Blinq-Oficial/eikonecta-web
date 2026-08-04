@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto | Eikonecta — Cotiza Tu Proyecto en Sincelejo</title>
+  <meta name="description" content="Cotiza tu proyecto con Eikonecta. Gran formato, branding, litografía, ambientación y más en Sincelejo, Sucre, Colombia.">
+  <link rel="icon" href="logo-eikonecta-icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar"><div class="navbar-inner"><a href="index.html" class="navbar-logo"><img src="logo-eikonecta-color.png" alt="Eikonecta"></a><div class="nav-toggle" aria-label="Menú"><span></span><span></span><span></span></div><ul class="navbar-links"><li><a href="index.html">Inicio</a></li><li><a href="index.html#servicios">Servicios</a></li><li><a href="nosotros.html">Nosotros</a></li><li><a href="contacto.html" class="btn btn-primary active" style="padding:0.65rem 1.5rem; font-size:0.8rem;">COTIZAR AHORA</a></li></ul></div></nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <span class="label label-orange">Hablemos</span>
+    <h1>Cotiza Tu Proyecto<br><span style="color:var(--orange);">Sin Compromiso</span></h1>
+    <p>Cuéntanos tu idea y recibe una propuesta personalizada en menos de 24 horas.</p>
+  </section>
+
+  <!-- Contact Form + Info -->
+  <section class="section">
+    <div class="container grid-2">
+      <div>
+        <h2 class="reveal">Escríbenos</h2>
+        <p class="reveal" style="margin-top:0.5rem; margin-bottom:2rem;">Completa el formulario o escríbenos directamente por WhatsApp. En cualquier caso, nuestro equipo te responderá pronto.</p>
+
+        <form class="contact-form" action="#" method="POST">
+          <div class="form-group reveal">
+            <label for="nombre">Nombre Completo</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group reveal">
+            <label for="empresa">Empresa / Negocio</label>
+            <input type="text" id="empresa" name="empresa" placeholder="Nombre de tu empresa">
+          </div>
+          <div class="form-group reveal">
+            <label for="telefono">Teléfono / WhatsApp</label>
+            <input type="tel" id="telefono" name="telefono" placeholder="+57 300 000 0000" required>
+          </div>
+          <div class="form-group reveal">
+            <label for="servicio">Servicio de Interés</label>
+            <select id="servicio" name="servicio" required>
+              <option value="">Selecciona un servicio...</option>
+              <option value="gran-formato">Gran Formato</option>
+              <option value="branding">Branding Estratégico</option>
+              <option value="ambientacion">Ambientación de Espacios</option>
+              <option value="litografia">Litografía e Impresión</option>
+              <option value="souvenirs">Souvenirs Corporativos</option>
+              <option value="editorial">Editorial</option>
+              <option value="acrilicos-3d">Acrílicos 3D</option>
+              <option value="varios">Varios / No estoy seguro</option>
+            </select>
+          </div>
+          <div class="form-group reveal">
+            <label for="mensaje">Cuéntanos Sobre Tu Proyecto</label>
+            <textarea id="mensaje" name="mensaje" placeholder="Describe tu proyecto, cantidades, plazos, o cualquier detalle relevante..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary pulse reveal" style="width:100%; justify-content:center;">ENVIAR SOLICITUD</button>
+        </form>
+      </div>
+
+      <div>
+        <!-- Contact Info Cards -->
+        <div class="card reveal" style="margin-bottom:1.5rem;">
+          <div class="card-icon cyan"><span class="material-symbols-outlined">chat</span></div>
+          <h3>WhatsApp Directo</h3>
+          <p>Escríbenos ahora y recibe una respuesta inmediata de nuestro equipo.</p>
+          <a href="https://wa.me/573001234567?text=Hola%20Eikonecta%2C%20quiero%20cotizar%20un%20proyecto" target="_blank" class="btn btn-secondary" style="margin-top:1rem;">Abrir WhatsApp →</a>
+        </div>
+
+        <div class="card reveal" style="margin-bottom:1.5rem;">
+          <div class="card-icon orange"><span class="material-symbols-outlined">location_on</span></div>
+          <h3>Ubicación</h3>
+          <p>Sincelejo, Sucre, Colombia</p>
+          <p style="font-size:0.9rem; margin-top:0.5rem;">Atendemos proyectos en toda la Costa Caribe</p>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-icon cyan"><span class="material-symbols-outlined">schedule</span></div>
+          <h3>Horario de Atención</h3>
+          <p>Lunes a Viernes: 8:00 AM — 6:00 PM</p>
+          <p style="font-size:0.9rem; margin-top:0.5rem;">Sábados: 8:00 AM — 12:00 PM</p>
+        </div>
+
+        <!-- Trust indicators -->
+        <div style="margin-top:2rem; padding:1.5rem; border-radius:14px; background:var(--bg-secondary);" class="reveal">
+          <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem;">
+            <span class="material-symbols-outlined" style="color:var(--cyan);">verified</span>
+            <span style="font-family:var(--font-headline); font-weight:700; font-size:0.85rem;">GARANTÍA EIKONECTA</span>
+          </div>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">Cotización sin compromiso · Respuesta en menos de 24h · 15+ años de respaldo</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-brand"><img src="logo-blanco.png" alt="Eikonecta"><p>¡Transformamos ideas en grandes historias!</p></div><div class="footer-col"><h4>Servicios</h4><ul><li><a href="gran-formato.html">Gran Formato</a></li><li><a href="branding.html">Branding</a></li><li><a href="ambientacion.html">Ambientación</a></li><li><a href="litografia.html">Litografía</a></li></ul></div><div class="footer-col"><h4>Más</h4><ul><li><a href="souvenirs.html">Souvenirs</a></li><li><a href="editorial.html">Editorial</a></li><li><a href="acrilicos-3d.html">Acrílicos 3D</a></li><li><a href="nosotros.html">Nosotros</a></li></ul></div><div class="footer-col"><h4>Contacto</h4><ul><li><a href="contacto.html">Cotizar</a></li><li><a href="https://wa.me/573001234567" target="_blank">WhatsApp</a></li></ul></div></div><div class="footer-bottom"><p>© 2026 Eikonecta · Sincelejo, Sucre, Colombia</p></div></div></footer>
+  <script src="animations.js"></script>
+</body>
+</html>

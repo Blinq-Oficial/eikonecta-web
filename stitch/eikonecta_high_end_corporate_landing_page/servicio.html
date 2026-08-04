@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Servicio | EIKONECTA</title>
+  <meta name="description" id="page-desc" content="">
+  <link rel="icon" href="logo-eikonecta-icon.png" type="image/png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 50:'#E8EDF5',100:'#C5D0E6',200:'#8FA3CC',300:'#5976B3',400:'#2D4A80',500:'#1A365D',600:'#152C4D',700:'#10213A',800:'#0B1727',900:'#060C14',950:'#0B1120' },
+            accent: { 50:'#FFF7ED',100:'#FFEDD5',200:'#FED7AA',300:'#FDBA74',400:'#FB923C',500:'#F97316',600:'#EA580C',700:'#C2410C' },
+          },
+          fontFamily: { heading: ['Montserrat','sans-serif'], body: ['Inter','sans-serif'] },
+        },
+      },
+    }
+  </script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Service Data -->
+  <script src="services-data.js"></script>
+
+  <style>
+    #reading-progress { position:fixed; top:0; left:0; width:0%; height:4px; background:linear-gradient(90deg,#F97316,#FB923C,#F97316); z-index:9999; box-shadow:0 0 10px rgba(249,115,22,0.5); }
+    .glass-card { background:rgba(255,255,255,0.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.3); }
+    ::selection { background:#F97316; color:white; }
+    .fade-up { opacity:0; transform:translateY(40px); }
+    ::-webkit-scrollbar { width:8px; }
+    ::-webkit-scrollbar-track { background:#f1f1f1; }
+    ::-webkit-scrollbar-thumb { background:#1A365D; border-radius:4px; }
+    ::-webkit-scrollbar-thumb:hover { background:#F97316; }
+
+    /* FAQ Accordion */
+    .faq-answer { max-height:0; overflow:hidden; transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease; padding:0 1.5rem; }
+    .faq-item.open .faq-answer { max-height:300px; padding:0 1.5rem 1.5rem; }
+    .faq-item.open .faq-chevron { transform:rotate(180deg); }
+    .faq-chevron { transition:transform 0.3s ease; }
+
+    /* Gallery hover */
+    .gallery-item::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 50%,rgba(11,17,32,0.7)); opacity:0; transition:opacity 0.4s; border-radius:1rem; }
+    .gallery-item:hover::after { opacity:1; }
+  </style>
+</head>
+<body class="font-body bg-white text-navy-500 overflow-x-hidden">
+
+  <!-- Reading Progress -->
+  <div id="reading-progress"></div>
+
+  <!-- === NAVBAR (reused from index) === -->
+  <nav class="fixed top-1 left-0 right-0 z-50 transition-all duration-500" id="navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="glass-card rounded-2xl px-6 py-3 flex items-center justify-between shadow-lg shadow-navy-500/5">
+        <a href="index.html" class="flex items-center gap-2">
+          <img src="logo-eikonecta-color.png" alt="EIKONECTA" class="h-9 w-auto">
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="index.html" class="font-heading font-semibold text-sm text-navy-400 hover:text-accent-500 transition-colors">INICIO</a>
+          <a href="index.html#servicios" class="font-heading font-semibold text-sm text-accent-500 transition-colors">SERVICIOS</a>
+          <a href="index.html#nosotros" class="font-heading font-semibold text-sm text-navy-400 hover:text-accent-500 transition-colors">NOSOTROS</a>
+          <a href="tel:3022383891" class="bg-accent-500 hover:bg-accent-600 text-white font-heading font-bold text-sm px-5 py-2.5 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-accent-500/30 flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">call</span>
+            LLAMAR AHORA
+          </a>
+        </div>
+        <button id="mobile-toggle" class="md:hidden p-2 rounded-xl hover:bg-navy-50 transition-colors" aria-label="Menú">
+          <svg class="w-6 h-6 text-navy-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden mt-2 glass-card rounded-2xl p-4 shadow-xl">
+        <a href="index.html" class="block py-3 px-4 font-heading font-semibold text-navy-500 hover:bg-accent-50 rounded-xl transition-colors">INICIO</a>
+        <a href="index.html#servicios" class="block py-3 px-4 font-heading font-semibold text-navy-500 hover:bg-accent-50 rounded-xl transition-colors">SERVICIOS</a>
+        <a href="index.html#nosotros" class="block py-3 px-4 font-heading font-semibold text-navy-500 hover:bg-accent-50 rounded-xl transition-colors">NOSOTROS</a>
+        <a href="tel:3022383891" class="block mt-2 bg-accent-500 text-white font-heading font-bold text-center py-3 px-4 rounded-xl">📞 302 238 3891</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- 1. HERO SECTION — Dark (#0B1120) -->
+  <!-- ============================================================ -->
+  <section id="hero-section" class="relative bg-navy-950 min-h-[70vh] lg:min-h-[80vh] flex items-center pt-24 pb-16 overflow-hidden">
+    <!-- Decorative -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-1/4 right-0 w-96 h-96 bg-accent-500 opacity-[0.06] rounded-full blur-[100px]"></div>
+      <div class="absolute bottom-0 left-1/4 w-80 h-80 bg-blue-400 opacity-[0.04] rounded-full blur-[80px]"></div>
+      <!-- Grid pattern -->
+      <div class="absolute inset-0 opacity-[0.03]" style="background-image:linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size:60px 60px;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+      <div class="max-w-3xl">
+        <div class="fade-up">
+          <span id="hero-label" class="inline-flex items-center gap-2 bg-accent-500/10 text-accent-400 font-heading font-bold text-xs uppercase tracking-[0.2em] px-4 py-2 rounded-full mb-6 border border-accent-500/20"></span>
+        </div>
+        <h1 class="fade-up">
+          <span id="hero-title" class="block font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight"></span>
+          <span id="hero-highlight" class="block font-heading font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-accent-500 leading-tight mt-2"></span>
+        </h1>
+        <p id="hero-subtitle" class="fade-up text-white/60 text-lg sm:text-xl max-w-xl mt-6 leading-relaxed"></p>
+        <div class="fade-up mt-8 flex flex-col sm:flex-row gap-4">
+          <a id="hero-cta" href="tel:3022383891"
+             class="bg-accent-500 hover:bg-accent-600 text-white font-heading font-bold text-lg px-8 py-4 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-accent-500/30 flex items-center justify-center gap-3">
+            <span class="material-symbols-outlined text-xl">call</span>
+            <span></span>
+          </a>
+          <a href="https://wa.me/573022383891" target="_blank"
+             class="border-2 border-white/20 text-white/80 hover:border-accent-400 hover:text-accent-400 font-heading font-bold text-lg px-8 py-4 rounded-full transition-all duration-300 flex items-center justify-center gap-3">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagonal cut -->
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full"><path d="M0 60L1440 0V60H0Z" fill="white"/></svg>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 2. PAIN/PROBLEM SECTION -->
+  <!-- ============================================================ -->
+  <section class="py-20 sm:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="inline-block font-heading font-bold text-xs uppercase tracking-[0.2em] text-accent-500 mb-4 fade-up">El Problema</span>
+        <h2 class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-navy-500 fade-up">
+          Si no actúas, esto <span class="text-accent-500">seguirá pasando</span>
+        </h2>
+      </div>
+      <div id="pains-grid" class="grid sm:grid-cols-3 gap-6">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 3. SOLUTION/MECHANISM SECTION -->
+  <!-- ============================================================ -->
+  <section class="py-20 sm:py-28 bg-navy-50/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="inline-block font-heading font-bold text-xs uppercase tracking-[0.2em] text-accent-500 mb-4 fade-up">La Solución</span>
+        <h2 id="solution-title" class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-navy-500 fade-up"></h2>
+        <p id="solution-subtitle" class="text-navy-300 text-lg max-w-2xl mx-auto mt-4 fade-up"></p>
+      </div>
+      <div id="solution-grid" class="grid sm:grid-cols-3 gap-8">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 4. GALLERY / PROOF OF WORK -->
+  <!-- ============================================================ -->
+  <section class="py-20 sm:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="inline-block font-heading font-bold text-xs uppercase tracking-[0.2em] text-accent-500 mb-4 fade-up">Nuestro Trabajo</span>
+        <h2 class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-navy-500 fade-up">
+          Resultados que <span class="text-accent-500">hablan por sí solos</span>
+        </h2>
+      </div>
+      <div id="gallery-grid" class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 5. FAQ ACCORDION -->
+  <!-- ============================================================ -->
+  <section class="py-20 sm:py-28 bg-navy-50/50">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="inline-block font-heading font-bold text-xs uppercase tracking-[0.2em] text-accent-500 mb-4 fade-up">FAQ</span>
+        <h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-navy-500 fade-up">
+          Preguntas <span class="text-accent-500">Frecuentes</span>
+        </h2>
+      </div>
+      <div id="faq-container" class="space-y-3">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 6. FULL-WIDTH CTA BANNER -->
+  <!-- ============================================================ -->
+  <section class="relative bg-navy-950 py-20 sm:py-24 overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute top-0 left-1/3 w-96 h-96 bg-accent-500 opacity-[0.08] rounded-full blur-[100px]"></div>
+      <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-500 opacity-[0.05] rounded-full blur-[80px]"></div>
+    </div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <h2 id="cta-title" class="font-heading font-extrabold text-3xl sm:text-4xl lg:text-5xl text-white fade-up"></h2>
+      <p class="text-white/50 text-lg mt-4 max-w-xl mx-auto fade-up">
+        Cotización sin compromiso. Respuesta en menos de 24 horas. 15+ años de respaldo.
+      </p>
+      <div class="fade-up mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="https://wa.me/573022383891?text=Hola%20Eikonecta%2C%20quiero%20cotizar%20un%20proyecto" target="_blank"
+           class="bg-green-500 hover:bg-green-600 text-white font-heading font-bold text-lg px-10 py-5 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/30 flex items-center justify-center gap-3">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          ESCRIBIR POR WHATSAPP
+        </a>
+        <a href="tel:3022383891"
+           class="border-2 border-white/20 text-white hover:border-accent-400 hover:text-accent-400 font-heading font-bold text-lg px-10 py-5 rounded-full transition-all duration-300 flex items-center justify-center gap-3">
+          <span class="material-symbols-outlined text-xl">call</span>
+          302 238 3891
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- === FOOTER (reused from index) === -->
+  <footer class="bg-navy-800 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="sm:col-span-2 lg:col-span-1">
+          <img src="logo-blanco.png" alt="EIKONECTA" class="h-8 mb-4">
+          <p class="text-white/40 text-sm leading-relaxed">¡Transformamos ideas en grandes historias! Socio Estratégico de Posicionamiento en Sincelejo.</p>
+        </div>
+        <div>
+          <h4 class="font-heading font-bold text-white text-sm uppercase tracking-wider mb-4">Servicios</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="servicio.html?s=gran-formato" class="text-white/40 hover:text-accent-400 transition-colors">Gran Formato</a></li>
+            <li><a href="servicio.html?s=branding" class="text-white/40 hover:text-accent-400 transition-colors">Branding</a></li>
+            <li><a href="servicio.html?s=ambientacion" class="text-white/40 hover:text-accent-400 transition-colors">Ambientación</a></li>
+            <li><a href="servicio.html?s=litografia" class="text-white/40 hover:text-accent-400 transition-colors">Litografía</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-heading font-bold text-white text-sm uppercase tracking-wider mb-4">Más Servicios</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="servicio.html?s=souvenirs" class="text-white/40 hover:text-accent-400 transition-colors">Souvenirs</a></li>
+            <li><a href="servicio.html?s=editorial" class="text-white/40 hover:text-accent-400 transition-colors">Editorial</a></li>
+            <li><a href="servicio.html?s=acrilicos-3d" class="text-white/40 hover:text-accent-400 transition-colors">Acrílicos 3D</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-heading font-bold text-white text-sm uppercase tracking-wider mb-4">Contacto</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="tel:3022383891" class="text-white/40 hover:text-accent-400 transition-colors">302 238 3891</a></li>
+            <li><a href="https://wa.me/573022383891" target="_blank" class="text-white/40 hover:text-accent-400 transition-colors">WhatsApp</a></li>
+            <li><span class="text-white/40">Sincelejo, Sucre</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-10 pt-8 text-center">
+        <p class="text-white/30 text-xs">© 2026 EIKONECTA · Marketing y Publicidad · Sincelejo, Sucre, Colombia</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- DYNAMIC CONTENT INJECTION + ANIMATIONS -->
+  <!-- ============================================================ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // ========================================
+      // GET SERVICE FROM URL PARAMS
+      // ========================================
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('s') || 'gran-formato';
+      const service = SERVICES_DATA[slug];
+
+      if (!service) {
+        document.body.innerHTML = '<div class="flex items-center justify-center min-h-screen"><p class="font-heading font-bold text-2xl text-navy-300">Servicio no encontrado</p></div>';
+        return;
+      }
+
+      // ========================================
+      // INJECT DATA INTO TEMPLATE
+      // ========================================
+
+      // Page meta
+      document.getElementById('page-title').textContent = `${service.name} | EIKONECTA — Sincelejo`;
+      document.getElementById('page-desc').content = service.heroSubtitle;
+
+      // Hero
+      document.getElementById('hero-label').textContent = service.label;
+      document.getElementById('hero-title').textContent = service.heroTitle;
+      document.getElementById('hero-highlight').textContent = service.heroHighlight;
+      document.getElementById('hero-subtitle').textContent = service.heroSubtitle;
+      const heroCta = document.getElementById('hero-cta');
+      heroCta.querySelector('span:last-child').textContent = service.ctaText;
+
+      // Pain cards
+      const painsGrid = document.getElementById('pains-grid');
+      service.pains.forEach((pain, i) => {
+        const card = document.createElement('div');
+        card.className = 'fade-up text-center p-8 rounded-2xl bg-white border border-navy-100 hover:border-red-200 hover:shadow-xl hover:shadow-red-500/5 hover:-translate-y-2 transition-all duration-500 group';
+        card.innerHTML = `
+          <div class="w-16 h-16 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+            <span class="material-symbols-outlined text-3xl">${pain.icon}</span>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-navy-500 mb-3">${pain.title}</h3>
+          <p class="text-navy-300 text-sm leading-relaxed">${pain.description}</p>
+        `;
+        painsGrid.appendChild(card);
+      });
+
+      // Solution steps
+      document.getElementById('solution-title').textContent = service.solution.title;
+      document.getElementById('solution-subtitle').textContent = service.solution.subtitle;
+      const solutionGrid = document.getElementById('solution-grid');
+      service.solution.steps.forEach((step, i) => {
+        const card = document.createElement('div');
+        card.className = 'fade-up relative';
+        card.innerHTML = `
+          <div class="text-center p-8 rounded-2xl bg-white border border-navy-100 hover:border-accent-200 hover:shadow-xl hover:shadow-accent-500/5 hover:-translate-y-2 transition-all duration-500 group h-full">
+            <div class="absolute -top-3 -left-3 w-8 h-8 bg-accent-500 text-white rounded-full flex items-center justify-center font-heading font-bold text-sm">${i + 1}</div>
+            <div class="w-16 h-16 rounded-2xl bg-accent-50 text-accent-500 flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+              <span class="material-symbols-outlined text-3xl">${step.icon}</span>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-navy-500 mb-3">${step.title}</h3>
+            <p class="text-navy-300 text-sm leading-relaxed">${step.description}</p>
+          </div>
+        `;
+        solutionGrid.appendChild(card);
+      });
+
+      // Gallery
+      const galleryGrid = document.getElementById('gallery-grid');
+      service.gallery.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = `fade-up gallery-item relative rounded-2xl overflow-hidden cursor-pointer group ${i === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}`;
+        div.innerHTML = `
+          <div class="bg-gradient-to-br from-navy-100 to-navy-50 ${i === 0 ? 'h-64 lg:h-full' : 'h-48 lg:h-56'} flex items-center justify-center group-hover:scale-105 transition-transform duration-700">
+            <img src="gallery-placeholder.png" alt="${item.alt}" class="w-full h-full object-cover">
+          </div>
+          <div class="absolute bottom-0 left-0 right-0 p-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <p class="text-white text-sm font-heading font-semibold">${item.alt}</p>
+          </div>
+        `;
+        galleryGrid.appendChild(div);
+      });
+
+      // FAQs
+      const faqContainer = document.getElementById('faq-container');
+      service.faqs.forEach((faq, i) => {
+        const item = document.createElement('div');
+        item.className = 'fade-up faq-item bg-white rounded-2xl border border-navy-100 overflow-hidden transition-all duration-300 hover:border-accent-200';
+        item.innerHTML = `
+          <button class="faq-trigger w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+            <span class="font-heading font-bold text-navy-500 text-sm sm:text-base pr-4">${faq.question}</span>
+            <span class="material-symbols-outlined text-accent-500 faq-chevron flex-shrink-0">expand_more</span>
+          </button>
+          <div class="faq-answer">
+            <p class="text-navy-300 text-sm leading-relaxed border-t border-navy-50 pt-4">${faq.answer}</p>
+          </div>
+        `;
+        faqContainer.appendChild(item);
+      });
+
+      // CTA Banner
+      document.getElementById('cta-title').innerHTML = `¿Listo para transformar tu marca con <span class="text-accent-500">${service.name}</span>?`;
+
+      // ========================================
+      // FAQ ACCORDION LOGIC
+      // ========================================
+      document.querySelectorAll('.faq-trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const item = trigger.closest('.faq-item');
+          const isOpen = item.classList.contains('open');
+          // Close all
+          document.querySelectorAll('.faq-item').forEach(fi => fi.classList.remove('open'));
+          // Toggle clicked
+          if (!isOpen) item.classList.add('open');
+        });
+      });
+
+      // ========================================
+      // ANIMATIONS
+      // ========================================
+
+      // Reading progress bar
+      const progressBar = document.getElementById('reading-progress');
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+      });
+
+      // Hero fade-ins
+      const heroEls = document.querySelectorAll('#hero-section .fade-up');
+      gsap.to(heroEls, {
+        opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power3.out', delay: 0.3,
+      });
+
+      // Scroll reveals
+      document.querySelectorAll('.fade-up:not(#hero-section .fade-up)').forEach(el => {
+        gsap.to(el, {
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
+          opacity: 1, y: 0, duration: 0.7, ease: 'power2.out',
+        });
+      });
+
+      // Mobile menu
+      document.getElementById('mobile-toggle').addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+      });
+    });
+  </script>
+</body>
+</html>
