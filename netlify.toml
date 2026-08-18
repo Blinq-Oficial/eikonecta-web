@@ -1,6 +1,11 @@
 [build]
   publish = "deploy"
 
+# Sitio estatico: no hay paso de compilacion. Netlify instala las
+# dependencias, aprovisiona Netlify Database y empaqueta las funciones.
+[build.environment]
+  NODE_VERSION = "22"
+
 [functions]
   directory = "netlify/functions"
 
