@@ -962,7 +962,9 @@
 
         <!-- Right: Form -->
         <div class="fade-up">
-          <form id="contact-form" class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl shadow-navy-500/5 border border-navy-100/50" action="/gracias/" method="POST">
+          <form id="contact-form" name="contacto" class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl shadow-navy-500/5 border border-navy-100/50" action="/gracias/" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="contacto">
+            <p class="hidden"><label>No llenar: <input name="bot-field"></label></p>
             <div class="space-y-5">
               <div>
                 <label for="nombre" class="block font-heading font-semibold text-sm text-navy-400 uppercase tracking-wider mb-2">Nombre completo</label>
