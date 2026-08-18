@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin | EIKONECTA</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/assets/img/logo-eikonecta-icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 50:'#E8EDF5',100:'#C5D0E6',200:'#8FA3CC',300:'#5976B3',400:'#2D4A80',500:'#1A365D',600:'#152C4D',700:'#10213A',800:'#0B1727',900:'#060C14' },
+            accent: { 50:'#FFF7ED',100:'#FFEDD5',200:'#FED7AA',300:'#FDBA74',400:'#FB923C',500:'#F97316',600:'#EA580C',700:'#C2410C' },
+          },
+          fontFamily: { heading: ['Montserrat','sans-serif'], body: ['Inter','sans-serif'] },
+        },
+      },
+    }
+  </script>
+  <style>
+    ::selection { background: #F97316; color: white; }
+    .glass-card { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #f1f1f1; } ::-webkit-scrollbar-thumb { background: #1A365D; border-radius: 4px; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease-out both; }
+    .status-nuevo { background: #DBEAFE; color: #1E40AF; }
+    .status-contactado { background: #FEF3C7; color: #92400E; }
+    .status-convertido { background: #D1FAE5; color: #065F46; }
+    .status-descartado { background: #FEE2E2; color: #991B1B; }
+  </style>
+</head>
+<body class="font-body bg-navy-900 text-white min-h-screen">
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="max-w-sm w-full fade-in">
+      <div class="text-center mb-8">
+        <img src="/assets/img/logo-eikonecta-color.png" alt="EIKONECTA" class="h-10 mx-auto mb-6">
+        <h1 class="font-heading font-extrabold text-2xl text-white">Panel de <span class="text-accent-500">Administración</span></h1>
+        <p class="text-white/40 text-sm mt-2">Gestión de leads y cotizaciones</p>
+      </div>
+      <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+        <label class="block font-heading font-semibold text-xs text-white/50 uppercase tracking-wider mb-2">Contraseña de acceso</label>
+        <input type="password" id="login-password" placeholder="Ingresa la contraseña"
+               class="w-full px-4 py-3.5 rounded-xl bg-white/10 border border-white/10 text-white placeholder:text-white/30 focus:outline-none focus:border-accent-400 focus:ring-2 focus:ring-accent-500/20 transition-all"
+               onkeydown="if(event.key==='Enter')doLogin()">
+        <button onclick="doLogin()"
+                class="w-full mt-4 bg-accent-500 hover:bg-accent-600 text-white font-heading font-bold py-3.5 rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-accent-500/30 flex items-center justify-center gap-2 cursor-pointer">
+          <span class="material-symbols-outlined">login</span>
+          Acceder
+        </button>
+        <p id="login-error" class="hidden text-red-400 text-sm text-center mt-3">Contraseña incorrecta</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+    <!-- Top Bar -->
+    <nav class="bg-navy-800 border-b border-white/10 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img src="/assets/img/logo-eikonecta-color.png" alt="EIKONECTA" class="h-7">
+          <span class="font-heading font-bold text-sm text-white/40">ADMIN PANEL</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <button onclick="loadLeads()" class="text-white/40 hover:text-accent-400 transition-colors cursor-pointer" title="Recargar">
+            <span class="material-symbols-outlined">refresh</span>
+          </button>
+          <button onclick="exportCSV()" class="text-white/40 hover:text-accent-400 transition-colors cursor-pointer" title="Exportar CSV">
+            <span class="material-symbols-outlined">download</span>
+          </button>
+          <button onclick="logout()" class="text-white/40 hover:text-red-400 transition-colors cursor-pointer" title="Salir">
+            <span class="material-symbols-outlined">logout</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Stats Bar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="stats-bar">
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-5 text-center">
+          <p class="font-heading font-black text-3xl text-accent-400" id="stat-total">0</p>
+          <p class="text-white/40 text-xs font-heading font-semibold uppercase tracking-wider mt-1">Total Leads</p>
+        </div>
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-5 text-center">
+          <p class="font-heading font-black text-3xl text-blue-400" id="stat-nuevos">0</p>
+          <p class="text-white/40 text-xs font-heading font-semibold uppercase tracking-wider mt-1">Nuevos</p>
+        </div>
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-5 text-center">
+          <p class="font-heading font-black text-3xl text-yellow-400" id="stat-contactados">0</p>
+          <p class="text-white/40 text-xs font-heading font-semibold uppercase tracking-wider mt-1">Contactados</p>
+        </div>
+        <div class="bg-white/5 rounded-2xl border border-white/10 p-5 text-center">
+          <p class="font-heading font-black text-3xl text-green-400" id="stat-convertidos">0</p>
+          <p class="text-white/40 text-xs font-heading font-semibold uppercase tracking-wider mt-1">Convertidos</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <button onclick="filterLeads('todos')" class="filter-btn active px-4 py-2 rounded-full text-sm font-heading font-semibold bg-accent-500 text-white transition-all cursor-pointer" data-filter="todos">Todos</button>
+        <button onclick="filterLeads('nuevo')" class="filter-btn px-4 py-2 rounded-full text-sm font-heading font-semibold bg-white/5 text-white/50 hover:bg-white/10 transition-all cursor-pointer" data-filter="nuevo">Nuevos</button>
+        <button onclick="filterLeads('contactado')" class="filter-btn px-4 py-2 rounded-full text-sm font-heading font-semibold bg-white/5 text-white/50 hover:bg-white/10 transition-all cursor-pointer" data-filter="contactado">Contactados</button>
+        <button onclick="filterLeads('convertido')" class="filter-btn px-4 py-2 rounded-full text-sm font-heading font-semibold bg-white/5 text-white/50 hover:bg-white/10 transition-all cursor-pointer" data-filter="convertido">Convertidos</button>
+        <button onclick="filterLeads('descartado')" class="filter-btn px-4 py-2 rounded-full text-sm font-heading font-semibold bg-white/5 text-white/50 hover:bg-white/10 transition-all cursor-pointer" data-filter="descartado">Descartados</button>
+      </div>
+
+      <!-- Leads Table -->
+      <div class="mt-6 bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left px-5 py-4 font-heading font-bold text-xs text-white/40 uppercase tracking-wider">Fecha</th>
+                <th class="text-left px-5 py-4 font-heading font-bold text-xs text-white/40 uppercase tracking-wider">Nombre</th>
+                <th class="text-left px-5 py-4 font-heading font-bold text-xs text-white/40 uppercase tracking-wider hidden sm:table-cell">Empresa</th>
+                <th class="text-left px-5 py-4 font-heading font-bold text-xs text-white/40 uppercase tracking-wider">Teléfono</th>
+                <th class="text-left px-5 py-4 font-heading font-bold text-xs text-white/40 uppercase tracking-wider hidden md:table-cell">Servicio</th>
+                <th class="text-left px-5 py-4 font-heading font-bold text-xs text-white/40 uppercase tracking-wider">Estado</th>
+                <th class="text-left px-5 py-4 font-heading font-bold text-xs text-white/40 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="leads-table">
+              <tr><td colspan="7" class="px-5 py-12 text-center text-white/30">Cargando leads...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden mt-6 text-center py-16">
+        <span class="material-symbols-outlined text-5xl text-white/10 mb-4">inbox</span>
+        <p class="text-white/30 font-heading font-semibold">No hay leads todavía</p>
+        <p class="text-white/20 text-sm mt-1">Cuando alguien llene el formulario, aparecerá aquí</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lead Detail Modal -->
+  <div id="lead-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);">
+    <div class="bg-navy-800 rounded-3xl border border-white/10 shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-heading font-bold text-xl text-white">Detalle del Lead</h2>
+        <button onclick="closeModal()" class="text-white/40 hover:text-white transition-colors cursor-pointer">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div id="modal-content" class="space-y-4">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let adminSecret = '';
+    let allLeads = [];
+
+    // === LOGIN ===
+    async function doLogin() {
+      const password = document.getElementById('login-password').value;
+      if (!password) return;
+
+      adminSecret = password;
+
+      try {
+        const res = await fetch('/api/get-leads?secret=' + encodeURIComponent(password));
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          sessionStorage.setItem('ek_admin', password);
+          document.getElementById('login-screen').classList.add('hidden');
+          document.getElementById('dashboard').classList.remove('hidden');
+          allLeads = data.leads;
+          renderLeads(allLeads);
+          updateStats(allLeads);
+        } else {
+          document.getElementById('login-error').classList.remove('hidden');
+        }
+      } catch (err) {
+        document.getElementById('login-error').classList.remove('hidden');
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('ek_admin');
+      adminSecret = '';
+      location.reload();
+    }
+
+    // Auto-login from session
+    (function() {
+      const saved = sessionStorage.getItem('ek_admin');
+      if (saved) {
+        document.getElementById('login-password').value = saved;
+        doLogin();
+      }
+    })();
+
+    // === LOAD LEADS ===
+    async function loadLeads() {
+      try {
+        const res = await fetch('/api/get-leads', {
+          headers: { 'X-Admin-Secret': adminSecret }
+        });
+        const data = await res.json();
+        if (data.success) {
+          allLeads = data.leads;
+          renderLeads(allLeads);
+          updateStats(allLeads);
+        }
+      } catch (err) {
+        console.error('Error loading leads:', err);
+      }
+    }
+
+    // === RENDER ===
+    function renderLeads(leads) {
+      const tbody = document.getElementById('leads-table');
+      const empty = document.getElementById('empty-state');
+
+      if (leads.length === 0) {
+        tbody.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      tbody.innerHTML = leads.map(lead => `
+        <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+          <td class="px-5 py-4 text-white/50 text-xs whitespace-nowrap">${formatDate(lead.created_at)}</td>
+          <td class="px-5 py-4 text-white font-semibold">${esc(lead.nombre)}</td>
+          <td class="px-5 py-4 text-white/50 hidden sm:table-cell">${esc(lead.empresa) || '—'}</td>
+          <td class="px-5 py-4">
+            <a href="https://wa.me/57${lead.telefono.replace(/\D/g,'')}" target="_blank"
+               class="text-green-400 hover:text-green-300 transition-colors font-medium">${esc(lead.telefono)}</a>
+          </td>
+          <td class="px-5 py-4 text-white/50 hidden md:table-cell">${esc(lead.servicio) || '—'}</td>
+          <td class="px-5 py-4">
+            <select onchange="updateStatus(${lead.id}, this.value)"
+                    class="status-${lead.estado} text-xs font-heading font-bold px-3 py-1.5 rounded-full border-0 cursor-pointer focus:outline-none">
+              <option value="nuevo" ${lead.estado==='nuevo'?'selected':''}>Nuevo</option>
+              <option value="contactado" ${lead.estado==='contactado'?'selected':''}>Contactado</option>
+              <option value="convertido" ${lead.estado==='convertido'?'selected':''}>Convertido</option>
+              <option value="descartado" ${lead.estado==='descartado'?'selected':''}>Descartado</option>
+            </select>
+          </td>
+          <td class="px-5 py-4">
+            <button onclick='showDetail(${JSON.stringify(lead).replace(/'/g,"\\'")})'
+                    class="text-white/30 hover:text-accent-400 transition-colors cursor-pointer" title="Ver detalle">
+              <span class="material-symbols-outlined text-xl">visibility</span>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStats(leads) {
+      document.getElementById('stat-total').textContent = leads.length;
+      document.getElementById('stat-nuevos').textContent = leads.filter(l => l.estado === 'nuevo').length;
+      document.getElementById('stat-contactados').textContent = leads.filter(l => l.estado === 'contactado').length;
+      document.getElementById('stat-convertidos').textContent = leads.filter(l => l.estado === 'convertido').length;
+    }
+
+    // === FILTERS ===
+    function filterLeads(estado) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('bg-accent-500', btn.dataset.filter === estado);
+        btn.classList.toggle('text-white', btn.dataset.filter === estado);
+        btn.classList.toggle('bg-white/5', btn.dataset.filter !== estado);
+        btn.classList.toggle('text-white/50', btn.dataset.filter !== estado);
+      });
+
+      if (estado === 'todos') {
+        renderLeads(allLeads);
+      } else {
+        renderLeads(allLeads.filter(l => l.estado === estado));
+      }
+    }
+
+    // === UPDATE STATUS ===
+    async function updateStatus(id, estado) {
+      try {
+        await fetch('/api/update-lead', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': adminSecret },
+          body: JSON.stringify({ id, estado }),
+        });
+        // Update local data
+        const lead = allLeads.find(l => l.id === id);
+        if (lead) lead.estado = estado;
+        updateStats(allLeads);
+      } catch (err) {
+        console.error('Error updating lead:', err);
+      }
+    }
+
+    // === DETAIL MODAL ===
+    function showDetail(lead) {
+      const modal = document.getElementById('lead-modal');
+      document.getElementById('modal-content').innerHTML = `
+        <div class="space-y-3">
+          <div><span class="text-white/40 text-xs font-heading uppercase tracking-wider">Nombre</span><p class="text-white font-semibold mt-1">${esc(lead.nombre)}</p></div>
+          <div><span class="text-white/40 text-xs font-heading uppercase tracking-wider">Empresa</span><p class="text-white/70 mt-1">${esc(lead.empresa) || 'No especificada'}</p></div>
+          <div><span class="text-white/40 text-xs font-heading uppercase tracking-wider">Teléfono</span><p class="mt-1"><a href="https://wa.me/57${lead.telefono.replace(/\D/g,'')}" target="_blank" class="text-green-400 hover:text-green-300 font-medium">${esc(lead.telefono)} ↗</a></p></div>
+          <div><span class="text-white/40 text-xs font-heading uppercase tracking-wider">Servicio</span><p class="text-white/70 mt-1">${esc(lead.servicio) || 'No seleccionado'}</p></div>
+          <div><span class="text-white/40 text-xs font-heading uppercase tracking-wider">Mensaje</span><p class="text-white/70 mt-1 leading-relaxed">${esc(lead.mensaje) || 'Sin mensaje'}</p></div>
+          <div><span class="text-white/40 text-xs font-heading uppercase tracking-wider">Fecha</span><p class="text-white/50 mt-1">${new Date(lead.created_at).toLocaleString('es-CO')}</p></div>
+          <div class="pt-4 border-t border-white/10">
+            <span class="text-white/40 text-xs font-heading uppercase tracking-wider">Notas internas</span>
+            <textarea id="modal-notas" class="w-full mt-2 px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-accent-400 resize-none" rows="3" placeholder="Agregar notas...">${esc(lead.notas) || ''}</textarea>
+            <button onclick="saveNotes(${lead.id})" class="mt-2 bg-accent-500 hover:bg-accent-600 text-white font-heading font-bold text-sm px-5 py-2.5 rounded-xl transition-all cursor-pointer">Guardar notas</button>
+          </div>
+        </div>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('lead-modal').classList.add('hidden');
+    }
+
+    async function saveNotes(id) {
+      const notas = document.getElementById('modal-notas').value;
+      try {
+        await fetch('/api/update-lead', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': adminSecret },
+          body: JSON.stringify({ id, notas }),
+        });
+        const lead = allLeads.find(l => l.id === id);
+        if (lead) lead.notas = notas;
+        closeModal();
+      } catch (err) {
+        console.error('Error saving notes:', err);
+      }
+    }
+
+    // === CSV EXPORT ===
+    function exportCSV() {
+      const headers = ['Fecha','Nombre','Empresa','Teléfono','Servicio','Mensaje','Estado'];
+      const rows = allLeads.map(l => [
+        formatDate(l.created_at), l.nombre, l.empresa, l.telefono, l.servicio, `"${(l.mensaje||'').replace(/"/g,'""')}"`, l.estado
+      ]);
+      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `eikonecta-leads-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+    }
+
+    // === UTILS ===
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString('es-CO', { day:'2-digit', month:'short', year:'numeric' });
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('lead-modal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+  </script>
+</body>
+</html>
