@@ -15,6 +15,13 @@
 /
   Cache-Control: public, max-age=0, must-revalidate
 
+# === Zonas privadas — fuera del índice de Google ===
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+
+/api/*
+  X-Robots-Tag: noindex, nofollow
+
 # === Security Headers (all pages) ===
 /*
   X-Frame-Options: DENY

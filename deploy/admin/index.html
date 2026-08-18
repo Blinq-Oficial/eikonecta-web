@@ -172,7 +172,7 @@
       adminSecret = password;
 
       try {
-        const res = await fetch('/api/get-leads?secret=' + encodeURIComponent(password));
+        const res = await fetch('/api/get-leads', { headers: { 'X-Admin-Secret': password } });
         const data = await res.json();
 
         if (res.ok && data.success) {

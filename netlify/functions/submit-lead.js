@@ -1,5 +1,19 @@
 // submit-lead.js — Receives form data and inserts into Netlify Database (PostgreSQL/Neon)
 const { neon } = require('@neondatabase/serverless');
+const { getConnectionString } = require('@netlify/database');
+
+// Resuelve la cadena de conexión de Netlify Database.
+// getConnectionString() lee NETLIFY_DB_URL (Netlify Database v2).
+// El fallback cubre la extensión Neon antigua (NETLIFY_DATABASE_URL).
+function dbUrl() {
+  try {
+    return getConnectionString();
+  } catch (err) {
+    const url = process.env.NETLIFY_DATABASE_URL;
+    if (!url) throw err;
+    return url;
+  }
+}
 
 exports.handler = async (event) => {
   // CORS headers
@@ -32,7 +46,7 @@ exports.handler = async (event) => {
     }
 
     // Connect to Netlify Database
-    const sql = neon(process.env.NETLIFY_DATABASE_URL);
+    const sql = neon(dbUrl());
 
     // Insert lead
     const result = await sql`

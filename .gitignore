@@ -1,5 +1,10 @@
-# Local Netlify folder
-.netlify
-
-node_modules/
+# Netlify
 .netlify/
+
+# Dependencias
+node_modules/
+
+# Variables de entorno — NUNCA subir a Git
+.env
+.env.*
+!.env.example

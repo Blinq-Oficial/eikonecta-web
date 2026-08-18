@@ -1,3 +1,8 @@
 User-agent: *
 Allow: /
+
+# Endpoints internos — sin valor de búsqueda
+Disallow: /api/
+Disallow: /.netlify/
+
 Sitemap: https://eikonecta.com/sitemap.xml

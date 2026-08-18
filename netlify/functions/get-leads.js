@@ -1,5 +1,19 @@
 // get-leads.js — Returns all leads from the database (protected by ADMIN_SECRET)
 const { neon } = require('@neondatabase/serverless');
+const { getConnectionString } = require('@netlify/database');
+
+// Resuelve la cadena de conexión de Netlify Database.
+// getConnectionString() lee NETLIFY_DB_URL (Netlify Database v2).
+// El fallback cubre la extensión Neon antigua (NETLIFY_DATABASE_URL).
+function dbUrl() {
+  try {
+    return getConnectionString();
+  } catch (err) {
+    const url = process.env.NETLIFY_DATABASE_URL;
+    if (!url) throw err;
+    return url;
+  }
+}
 
 exports.handler = async (event) => {
   const headers = {
@@ -18,13 +32,13 @@ exports.handler = async (event) => {
   }
 
   // Auth check
-  const secret = event.headers['x-admin-secret'] || event.queryStringParameters?.secret;
+  const secret = event.headers['x-admin-secret'];
   if (!secret || secret !== process.env.ADMIN_SECRET) {
     return { statusCode: 401, headers, body: JSON.stringify({ error: 'No autorizado' }) };
   }
 
   try {
-    const sql = neon(process.env.NETLIFY_DATABASE_URL);
+    const sql = neon(dbUrl());
     const params = event.queryStringParameters || {};
 
     let query;

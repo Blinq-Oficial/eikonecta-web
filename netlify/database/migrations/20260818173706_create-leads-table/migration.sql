@@ -1,5 +1,5 @@
--- Eikonecta — Lead Management Schema
--- Run this after `netlify database init`
+-- Tabla de leads del formulario de contacto de eikonecta.com
+-- Consumida por netlify/functions/{submit-lead,get-leads,update-lead}.js
 
 CREATE TABLE IF NOT EXISTS leads (
   id SERIAL PRIMARY KEY,
@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS leads (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Index for common queries
 CREATE INDEX IF NOT EXISTS idx_leads_estado ON leads(estado);
 CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_leads_servicio ON leads(servicio);
